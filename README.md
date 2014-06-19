@@ -13,3 +13,5 @@ git remote add github -m master git@github.com:jason-callaway/geoserver-on-opens
 git pull -s recursive -X theirs github master
 
 git push origin
+
+
