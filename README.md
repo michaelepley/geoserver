@@ -1,17 +1,46 @@
-A quickstart for GeoServer to run on OpenShift based on thesteve0's repo from which this is forked.
+GeoServer on OpenShift
+======================
 
-Tomcat 7 (JBoss EWS 2.0)
+To fully appreciate what is happening here please read the [blog post](https://www.openshift.com/blogs/build-your-own-google-maps-and-more-with-geoserver-on-openshift) by Steven on which this demo is based.
 
-GeoServer 2.5 WAR file
+Create the gear.
 
-To fully appreciate what is happening here please read the [blog post](https://www.openshift.com/blogs/build-your-own-google-maps-and-more-with-geoserver-on-openshift) to accompany this repo.
+```
+rhc app-create -s geoserver jbossews-2.0
+rhc cartridge add postgresql-9.2 --app geoserver
+```
 
+Add the PostGIS extensions to PostgreSQL.
 
+```
+rhc ssh geoserver
+psql
+create extension postgis;
+\q
+exit
+```
 
+Pull down the demo environment
+
+```
+cd geoserver
 git remote add github -m master git@github.com:jason-callaway/geoserver-on-openshift.git
 
 git pull -s recursive -X theirs github master
+```
+
+We don't need to build anything, so remove pom.xml.
+
+```
+git rm pom.xml
+```
+
+Now commit and push
+
+```
+git commit -am 'initial commit'
 
 git push origin
+```
 
-
+The GeoServer can be accessed at http://geoserver-yournamespace.rhcloud.com/web.
