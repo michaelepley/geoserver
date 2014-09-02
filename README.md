@@ -43,4 +43,9 @@ git commit -am 'initial commit'
 git push origin
 ```
 
+Set CATALINA_OPTS.
+```
+rhc set-env --env CATALINA_OPTS=/var/lib/<your uuid>/app-root/data/geoserver_data --app geoserver
+```
+
 The GeoServer can be accessed at http://geoserver-yournamespace.rhcloud.com/web.
