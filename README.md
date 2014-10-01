@@ -1,52 +1,51 @@
-# GeoServer
+GeoServer on OpenShift
+======================
 
-[GeoServer](http://geoserver.org) GeoServer is an open source software server written in Java that 
-allows users to share and edit geospatial data. Designed for interoperability, it publishes data from 
-any major spatial data source using open standards.
+To fully appreciate what is happening here please read the [blog post](https://www.openshift.com/blogs/build-your-own-google-maps-and-more-with-geoserver-on-openshift) by Steven on which this demo is based.
 
-Being a community-driven project, GeoServer is developed, tested, and supported by a diverse group of 
-individuals and organizations from around the world.
+Create the gear.
 
-GeoServer is the reference implementation of the Open Geospatial Consortium (OGC) 
-Web Feature Service (WFS) and Web Coverage Service (WCS) standards, as well as a high performance 
-certified compliant Web Map Service (WMS), compliant Catalog Service for the Web (CSW)
-and implementing Web Processing Service (WPS). 
-GeoServer forms a core component of the Geospatial Web.
+```
+rhc app-create -s geoserver jbossews-2.0
+rhc cartridge add postgresql-9.2 --app geoserver
+```
 
-## License
+Add the PostGIS extensions to PostgreSQL.
 
-GeoServer licensed under the [GPL](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html).
+```
+rhc ssh geoserver
+psql
+create extension postgis;
+\q
+exit
+```
 
-## Using
+Pull down the demo environment
 
-Please refer to the [user guide](http://docs.geoserver.org/stable/en/user/) for information
-on how to install and use GeoServer.
+```
+cd geoserver
+git remote add github -m master git@github.com:jason-callaway/geoserver-on-openshift.git
 
-## Building
+git pull -s recursive -X theirs github master
+```
 
-GeoServer uses [Apache Maven](http://maven.apache.org/) for a build system. To 
-build the application run maven from the ```src``` directory.
+We don't need to build anything, so remove pom.xml.
 
-    % mvn clean install
+```
+git rm pom.xml
+```
 
-See the [developer guide](http://docs.geoserver.org/stable/en/developer/) 
-for more details.
+Now commit and push
 
-## Bugs
+```
+git commit -am 'initial commit'
 
-GeoServer uses [JIRA](http://jira.codehaus.org/browse/GEOS), hosted by 
-[CodeHaus](http://www.codehaus.org/), for issue tracking.
+git push origin
+```
 
-## Mailing Lists
+Set CATALINA_OPTS.
+```
+rhc set-env --env CATALINA_OPTS=/var/lib/<your uuid>/app-root/data/geoserver_data --app geoserver
+```
 
-The [mailing list page](http://geoserver.org/comm/) on the GeoServer web site provides
-access to the various mailing list, as well as some indication of the [code of conduct](http://geoserver.org/comm/userlist-guidelines.html) when posting to the lists
-
-## Contributing
-
-Please read [the contribution guilelines](https://github.com/geoserver/geoserver/blob/master/CONTRIBUTING.md) before contributing pull requests to the GeoServer project.
-
-## More Information
-
-Visit the [website](http://geoserver.org/) or read the [docs](http://docs.geoserver.org/). 
-
+The GeoServer can be accessed at http://geoserver-yournamespace.rhcloud.com/web.
